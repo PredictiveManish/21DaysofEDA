@@ -1,7 +1,7 @@
 # Grade Calculator
 marks = int(input("Enter your marks in the subject: "))
 
-if(100<=marks<=90):
+if(marks<=90):
     print("A")
 elif(89<=marks<=80):
     print("B")
