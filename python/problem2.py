@@ -13,4 +13,3 @@ else:
         print("Your ticket price is $8.")
     else:
         print("You have to pay $12.")
-    
