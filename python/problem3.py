@@ -1,14 +1,16 @@
 # Grade Calculator
 marks = int(input("Enter your marks in the subject: "))
 
-if(marks<=90):
-    print("A")
+if(marks>=90):
+    grade = "A"
 elif(89<=marks<=80):
-    print("B")
+    grade = "B"
 elif(70<=marks<=79):
-    print("C")
+    grade = "C"
 elif(60<=marks<=69):
-    print("D")
+    grade = "D"
 else:
-    print("F")
+    grade = "F"
+
+print(f"Your grade is: {grade}")
 
