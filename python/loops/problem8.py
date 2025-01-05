@@ -9,4 +9,4 @@ if number>1:
         if number%i==0:
             its_prime = False
             break
-print("Prime:",its_prime)
+print("Prime(True/False):",its_prime)
