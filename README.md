@@ -1,7 +1,7 @@
 # 21 Days of EDA
 A 21 Days journey to stronger the ability to analyse and work with data.
 
-
+---
 ## 📅 Day 1 – 21-Day EDA Challenge
 
 ### 🚀 Goal:
@@ -11,10 +11,7 @@ Kickstart the EDA (Exploratory Data Analysis) process by loading the dataset and
 - Python
 - Pandas
 - Jupyter Notebook or any Python IDE
----
-## 📂 Dataset
-`Student.csv` – A sample dataset containing student information.
----
+
 ## ✅ Tasks Completed
 
 1. **Environment Setup**
@@ -42,3 +39,4 @@ print(df.isnull().sum())
 print(df.describe())
 print(df.info())
 ```
+---
