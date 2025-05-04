@@ -16,7 +16,7 @@ Kickstart the EDA (Exploratory Data Analysis) process by loading the dataset and
 
 1. **Environment Setup**
    - Installed `pandas`, `numpy`, `matplotlib`, and `seaborn`
-   - Created a new Jupyter Notebook `eda_day1.ipynb`
+   - Created a new Jupyter Notebook `Day1.ipynb`
 
 2. **Loaded the Dataset**
 ```python
