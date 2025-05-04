@@ -1,5 +1,4 @@
-# EDA-10
+# 21 Days of EDA
+A 21 Days journey to stronger the ability to analyse and work with data.
 
-A 10-days journey to stronger the ability to analyse and work with data.
 
-Also learning python.
