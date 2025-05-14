@@ -2,72 +2,59 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-# Step 1: Load the Titanic dataset
-df = pd.read_csv('D://Challenges/21DaysofEDA/tested.csv') 
+# Load the Titanic dataset
+df = pd.read_csv('D://Challenges/21DaysofEDA/tested.csv')
 
-# Fill missing 'Age' with median value, 'Embarked' with the mode
-df['Age'] = df['Age'].fillna(df['Age'].median())  # Avoid inplace=True warning
-df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])  # Avoid inplace=True warning
+# Preprocessing
+df['Age'].fillna(df['Age'].median(), inplace=True)
+df['Fare'].fillna(df['Fare'].median(), inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
 
-# Drop 'Cabin' because it's mostly missing (or you can use 'fillna()' if you prefer)
-df.drop(columns=['Cabin'], inplace=True)
+# One-Hot Encoding for categorical features
+df = pd.get_dummies(df, columns=['Embarked', 'Sex'], drop_first=True)
 
-# Step 4: Feature Encoding
-# Convert 'Sex' and 'Embarked' to numeric values using Label Encoding or One-Hot Encoding
-df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})  # Label encoding for 'Sex'
-df = pd.get_dummies(df, columns=['Embarked'], drop_first=True)  # One-Hot Encoding for 'Embarked'
+# Select relevant columns for clustering
+df = df[['Pclass', 'Age', 'Fare', 'SibSp', 'Parch', 'Embarked_Q', 'Embarked_S', 'Sex_male']]
 
-# Step 5: Feature Scaling
+# Scaling the features
 scaler = StandardScaler()
-df[['Age', 'Fare', 'SibSp', 'Parch']] = scaler.fit_transform(df[['Age', 'Fare', 'SibSp', 'Parch']])
+scaled_data = scaler.fit_transform(df)
 
-# Step 6: Handle missing values in the features used for clustering
-# Ensure no NaN values in the clustering columns
-df[['Fare', 'SibSp', 'Parch']] = df[['Fare', 'SibSp', 'Parch']].fillna(df[['Fare', 'SibSp', 'Parch']].median())
-
-# Step 7: Apply KMeans Clustering
-# Choose the number of clusters (K) – Use the Elbow Method to determine this
-# For simplicity, let's assume 3 clusters
+# KMeans Clustering
 kmeans = KMeans(n_clusters=3, random_state=42)
-df['Cluster'] = kmeans.fit_predict(df[['Age', 'Fare', 'SibSp', 'Parch']])
+df['Cluster'] = kmeans.fit_predict(scaled_data)
 
-# Step 8: Visualize the clusters using PCA
-# Reduce the data to 2 dimensions using PCA for visualization
+# PCA for 2D visualization
 pca = PCA(n_components=2)
-pca_components = pca.fit_transform(df[['Age', 'Fare', 'SibSp', 'Parch']])
-
-# Add PCA components to the dataframe for plotting
+pca_components = pca.fit_transform(scaled_data)
 df['PCA1'] = pca_components[:, 0]
 df['PCA2'] = pca_components[:, 1]
 
-# Plot the clusters in 2D using PCA components
-plt.figure(figsize=(8, 6))
-sns.scatterplot(x='PCA1', y='PCA2', hue='Cluster', data=df, palette='viridis', s=100)
-plt.title('Clusters Visualized in 2D using PCA')
-plt.show()
-
-# Step 9: Cluster Analysis & Interpretation
-# Task 1: Profile the clusters (Feature distribution per cluster)
-cluster_profile = df.groupby('Cluster').mean()  # or use .median() if you prefer median values
-print(cluster_profile)
-
-# Task 2: Cluster vs Survived (Examine survival rates in each cluster)
-survival_by_cluster = df.groupby(['Cluster', 'Survived']).size().unstack()
-print(survival_by_cluster)
-
-# Task 3: Boxplot to see feature distribution across clusters
+# Plotting the clusters
 plt.figure(figsize=(10, 6))
-sns.boxplot(x='Cluster', y='Age', data=df)
-plt.title('Age Distribution by Cluster')
+sns.scatterplot(x='PCA1', y='PCA2', hue='Cluster', palette='viridis', data=df)
+plt.title('KMeans Clustering - Titanic Dataset')
+plt.savefig('Kmeans.jpg')
 plt.show()
 
-# Task 4: Visualize the survival rate across clusters
-plt.figure(figsize=(8, 6))
-sns.barplot(x='Cluster', y='Survived', data=df, estimator=lambda x: sum(x) / len(x))
-plt.title('Survival Rate by Cluster')
-plt.savefig('Survival.png')
+# Profiling clusters - Cluster vs Age
+sns.boxplot(x='Cluster', y='Age', data=df)
+plt.title('Cluster vs Age')
+plt.savefig('Clusterage.png')
+plt.show()
+
+# Profiling clusters - Cluster vs Fare
+sns.boxplot(x='Cluster', y='Fare', data=df)
+plt.title('Cluster vs Fare')
+plt.savefig('clusterfare.png')
+plt.show()
+
+# Visualizing survival in each cluster
+sns.countplot(x='Cluster', hue='Survived', data=df)
+plt.title('Cluster vs Survival')
+plt.savefig('clustersurvived.png')
 plt.show()
