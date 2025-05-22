@@ -19,7 +19,7 @@ new_stdout = io.StringIO()
 sys.stdout = new_stdout
 
 # Create PDF file
-pdf_pages = PdfPages('Data_Science_Salaries_Analysis.pdf')
+pdf_pages = PdfPages('Data_Science_Analysis.pdf')
 
 # Load your dataset
 df = pd.read_csv('data_science_salaries.csv')
@@ -495,5 +495,39 @@ Key Recommendations:
 """
 add_text_page(questions_covered, "Analysis Questions Covered & Key Takeaways")
 
+# Calculate remote pay differences by role
+remote_pay_diff = df.groupby(['job_title_grouped', 'work_models'])['salary_in_usd'].median().unstack()
+remote_pay_diff['remote_premium'] = remote_pay_diff['Remote'] - remote_pay_diff['On-site']
+
+# Top 5 roles with biggest remote premiums
+top_premium = remote_pay_diff['remote_premium'].sort_values(ascending=False).head(5)
+# Top 5 roles with biggest remote penalties
+top_penalty = remote_pay_diff['remote_premium'].sort_values().head(5)
+
+# Visualization
+plt.figure(figsize=(10, 6))
+pd.concat([top_premium, top_penalty]).plot(kind='barh', color=['green']*5 + ['red']*5)
+plt.title('Roles with Biggest Remote Pay Premiums (Green) vs Penalties (Red)')
+plt.xlabel('Salary Difference (Remote - On-site)')
+plt.savefig('remote_pay_gap.png')  # Share this with commenter
+plt.show()
 # Close the PDF
 pdf_pages.close()
+
+from sklearn.preprocessing import MinMaxScaler
+
+# Fix: Create normalized salary column
+gdp_data = {'US': 1.0, 'UK': 0.8, 'India': 0.3}  # Example GDP coefficients
+df['gdp_factor'] = df['company_location'].map(gdp_data)
+df['normalized_salary'] = df['salary_in_usd'] * df['gdp_factor']
+
+# Visualize impact
+plt.figure(figsize=(10,5))
+sns.boxplot(data=df, x='company_location', y='normalized_salary')
+plt.title('Salaries Normalized by Country GDP Factor')
+plt.savefig('gdp_normalized.png')  
+
+
+
+
+
