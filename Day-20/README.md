@@ -32,12 +32,12 @@ A comprehensive data analysis of IPL 2025 season ball-by-ball delivery data, unc
 
 ```bash
 IPL_Analysis/
-├── data/                    # Data files
-│   └── ipl_2025_deliveries.csv
+├── ipl_2025_deliveries.csv
 ├── Charts/                 # Generated visualizations
 │   ├── averagepowerplay.png
 │   ├── Top20_WicketTakers.png
 │   └── ...
-├── IPL_2025_Analysis.ipynb  # Main analysis notebook
+├── IPL_2025_Analysis.ipynb  
+├── day20.py # Extracted code from Jupyter notebook to Python script
 └── README.md
 ```
