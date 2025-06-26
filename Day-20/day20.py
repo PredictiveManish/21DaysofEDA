@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Introduction
-
-# 
-
-# In[2]:
-
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,24 +7,18 @@ import plotly
 import os
 
 
-# In[138]:
-
 
 df = pd.read_csv('ipl_2025_deliveries.csv')
 df.head()
 df.tail()
 
 
-# In[5]:
-
 
 df['total_runs'] = df['runs_of_bat'] + df['extras']
+ 
+# ----------------------------------------------------------------
 
-
-# ## Total Runs Scored by Each Team in this season
-
-# In[134]:
-
+# Total Runs Scored by Each Team in this season
 
 team_runs = df.groupby('batting_team')['total_runs'].sum().reset_index()
 team_runs = team_runs.sort_values(by='total_runs',ascending=False)
@@ -73,10 +57,8 @@ plt.xlabel('Teams')
 plt.savefig("runs.png")
 plt.show()
 
-
+# ----------------------------------------------------------------------------
 # ## Average Runs Scored by Each Team per innings in the season(Till now)
-
-# In[14]:
 
 
 team_match_runs = df.groupby(['match_id','batting_team'])['total_runs'].sum().reset_index()
@@ -114,10 +96,9 @@ plt.tight_layout()
 plt.savefig("averageruns.png")
 plt.show()
 
-
+#--------------------------------------------------
 # ## Total Runs Conceded by Each Teams
 
-# In[127]:
 
 
 team_runs_conceded = df.groupby('bowling_team')['total_runs'].sum().reset_index()
@@ -135,11 +116,8 @@ plt.ylabel('Teams')
 plt.savefig("TotalRunsconced.png")
 plt.show()
 
-
-# ## Average Runs Conceded by Each Team
-
-# In[130]:
-
+# ---------------------------------------------------------
+# Average Runs Conceded by Each Team
 
 team_runs_conceded = df.groupby(['match_id', 'bowling_team'])['total_runs'].sum().reset_index()
 
@@ -172,10 +150,8 @@ plt.tight_layout()
 plt.savefig("Averageconceded.png")
 plt.show()
 
-
-# ## Total Wickets Taken by Each Team in this season
-
-# In[99]:
+# --------------------------------------------------
+# Total Wickets Taken by Each Team in this season
 
 
 wickets = df[df['wicket_type'].notnull()]
@@ -201,18 +177,13 @@ plt.tight_layout()
 plt.savefig('total_wickets.png')
 plt.show()
 
-
-# In[20]:
-
+# -------------------------------------------------------------
 
 import math 
 df['over_'] = df['over'].map(lambda x:math.ceil(x))
 
 
-# ## Teamwise Run rate
-
-# In[100]:
-
+# Teamwise Run rate
 
 # Filtering Out Wide and no-ball deliveries
 legal_deliveries = df[(df['noballs'] == 0) & (df['wide']==0)]
@@ -247,11 +218,8 @@ plt.ylabel('Run Rate')
 plt.savefig('Runrate.png')
 plt.show()
 
-
-# ## TeamWise Economy
-
-# In[102]:
-
+# -----------------------------------------------
+# TeamWise Economy
 
 balls_bowled = df.groupby('bowling_team').size().reset_index(name='balls_bowled')
 
@@ -283,12 +251,9 @@ plt.ylabel('Economy')
 plt.savefig('economy.png')
 plt.show()
     
+# ---------------------------------------------------
 
-
-# ## Top Runs Scorers in this season
-
-# In[104]:
-
+# Top Runs Scorers in this season
 
 # Your aggregation logic
 top_run_scorer = df.groupby(['striker']).agg(
@@ -317,10 +282,8 @@ plt.tight_layout()
 plt.savefig("Top20.png")
 plt.show()
 
-
-# ## Top 20 Batsman Strike Rate
-
-# In[135]:
+# --------------------------------------------
+# Top 20 Batsman Strike Rate
 
 
 batsman_runs = df.groupby('striker')['runs_of_bat'].sum().reset_index()
@@ -352,11 +315,8 @@ plt.tight_layout()
 plt.savefig("Top20_StrikeRates.png")
 plt.show()
 
-
-# ## Top Wicket Takers
-
-# In[107]:
-
+# ----------------------------------------------------
+# Top Wicket Takers
 
 top_wicket_takers = df.loc[(~df['wicket_type'].isin(['runout','retired out','retired hurt'])) & (df['byes']==0) & (df['legbyes']==0)].groupby('bowler').agg(
     Team = ('bowling_team',lambda x: x.unique()[0]),
@@ -385,11 +345,9 @@ plt.tight_layout()
 plt.savefig("Top20_WicketTakers.png")
 plt.show()
 
+# --------------------------------------------------
 
-# ## Bowlers with Best Economy(Overs bowled>10)
-
-# In[108]:
-
+# Bowlers with Best Economy(Overs bowled>10)
 
 # Calculate the number of overs bowled by each bowler
 balls_bowled = df.groupby('bowler')['match_id'].count().reset_index()
@@ -433,13 +391,9 @@ plt.ylabel('Bowler')
 plt.tight_layout()
 plt.savefig("BestEconomy.png")
 plt.show()
+# -----------------------------------------------
 
-
-
-# ## Powerplay Average Teamwise
-
-# In[133]:
-
+# Powerplay Average Teamwise
 
 # Filter data for powerplay overs (1-6)
 powerplay_data = df[df['over'] <= 6]
@@ -464,11 +418,10 @@ plt.ylabel('Teams')
 plt.savefig("averagepowerplay.png")
 plt.show()
 
+# -------------------------------------------------
 
-# ## Teamwise Average Runs in Middle Overs (7-16)
 
-# In[129]:
-
+# Teamwise Average Runs in Middle Overs (7-16)
 
 middle_overs_data = df[(df['over'] > 6) & (df['over'] <= 16)]
 
@@ -491,11 +444,8 @@ plt.ylabel('Teams')
 plt.savefig("Aveage715.png")
 plt.show()
 
-
-# ## Average Runs in Death Overs(16-20)
-
-# In[131]:
-
+# -------------------------------------------------------------
+# Average Runs in Death Overs(16-20)
 
 death_overs_data = df[df['over'] >= 16]
 
@@ -517,10 +467,8 @@ plt.ylabel('Teams')
 plt.savefig("Averagedeath.png")
 plt.show()
 
-
-# ## Top Powerplay hitters
-
-# In[137]:
+# -----------------------------------------------------------
+# Top Powerplay hitters
 
 
 top_run_scorer_powerplay = df[df['over'] < 6].groupby(['striker']).agg(
@@ -545,10 +493,8 @@ plt.ylabel('Batsman')
 plt.savefig('Powerplayhitter.png')
 plt.show()
 
-
-# ## Top Strikerate player in Powerplay
-
-# In[120]:
+# ------------------------------------------
+# Top Strikerate player in Powerplay
 
 
 top_sr_powerplay = df[df['over'] < 6].groupby(['striker']).agg(
@@ -574,10 +520,8 @@ plt.ylabel('Batsman')
 plt.savefig('PowerplaySR.png')
 plt.show()
 
-
-# ## Most Wicket Takers in Powerplay
-
-# In[136]:
+# ---------------------------------------------------------
+# Most Wicket Takers in Powerplay
 
 
 top_wicket_takers_powerplay = df[df['over'] < 6].loc[(~df['wicket_type'].isin(['runout','retired out','retired hurt'])) & (df['byes'] == 0) & (df['legbyes'] == 0)].groupby('bowler').agg(
@@ -603,10 +547,8 @@ plt.ylabel('Bowler')
 plt.savefig('Powerplaywickets.png')
 plt.show()
 
-
-# ## Best Economy in Powerplay
-
-# In[124]:
+# ---------------------------------------------------------
+# Best Economy in Powerplay
 
 
 balls_bowled = df[df['over'] < 6].groupby('bowler')['match_id'].count().reset_index()
@@ -642,8 +584,6 @@ plt.savefig('BowlerPPeconomy.png')
 plt.show()
 
 
-
-# In[ ]:
 
 
 

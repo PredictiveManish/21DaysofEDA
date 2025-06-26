@@ -188,8 +188,6 @@ sns.boxplot(data=countries, x='company_location', y='salary_in_usd')
 plt.title('Salary Comparison: US vs Poland', pad=20)
 save_plot_to_pdf()
 
-# Job title distribution
-# Constants for consistent page sizing
 PAGE_WIDTH = 11  # Landscape width in inches
 PAGE_HEIGHT = 8.5 # Landscape height in inches
 DPI = 300         # resolution
